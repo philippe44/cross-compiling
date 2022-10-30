@@ -73,16 +73,3 @@ make -j8 && make install
 popd
 
 exit
-
-#Get FreeBSD libs/headers, extract
-
-#with that method using sysroot, no need to fix anylink
-# tar cvf ~freebsd.tar /lib /usr/include/ /usr/lib/ /usr/lib32/
-# cd $SYSROOT
-# tar xvf ~freebsd.tar
-
-#otherwise, copy into another opt/freebsd dir
-# tar -xf /tmp/base.txz ./lib/ ./usr/lib/ ./usr/include/
-# cd /opt/freebsd/usr/lib 
-# find . -xtype l|xargs ls -l|grep ' /lib/' | awk '{print "ln -sf /opt/freebsd13.1"$11 " " $9}' | /bin/sh
-# and fix "include as well 
