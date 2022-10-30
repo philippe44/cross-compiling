@@ -9,20 +9,20 @@ Because my applications exist with so many different binaries, I need a centrali
 ## Linux
 
 This was supposed to be the easy part. I'm under some Debian-based distro and moved to 22.04 LTS at the time of this writing. A lot of compilers are provided pre-build and can be added with:
-`
+```
  sudo apt-get install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
  sudo apt-get install gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
  sudo apt-get install gcc-sparc64-linux-gnu binutils-sparc64-linux-gnu
  sudo apt-get install gcc-mips-linux-gnu binutils-mips-linux-gnu
  sudo apt-get install gcc-powerpc-linux-gnu binutils-powerpc-linux-gnu
-` 
+```
 But a first issue starts when compiling for 32 and 64 bits Intel *and* these other architecture. Normally, the default intel compiler is multi-lib, which means that it's 64 bits by default and by adding `sudo apt-get install gcc-multilib` (from memory, actual syntax might a bit different) then you are good to go to provide 32 bits files when compiled with '-m32' flags.
 
 Well, unfortunately, there is an ancient incompatibility with all other compilers that nobody dared to fix which means that as soon as you install one of the other ones named above, the multilib x86 option is removed. You have to install separately an i686 compiler, which fortunately is also an available package
-`
+```
  sudo apt-get install gcc-i686-linux-gnu binutils-i686-linux-gnu
-` 
-Not that you'll lose the ability to use '-m32' and some packages relying on that might fail. You’ll have to patch them then.
+```
+Note that you'll lose the ability to use '-m32' and some packages relying on that might fail. You’ll have to patch them then.
 
 With that you have a lot of Linux compilers available. This sounds all good and if your intention is to use what you compile for your own machine (and forward in time), you are good to go.
 
