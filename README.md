@@ -109,7 +109,7 @@ So I’ve adopted a sort of interim approach where you can rebuild all what I pr
 -- targets
    |-- include/<sub-package>/*.h
    |-- <os>/include/<sub-package>/*.h
-   |-- <os>/<cpu\>/include/<sub-package>/*.h
+   |-- <os>/<cpu>/include/<sub-package>/*.h
    |-- <os>/<cpu>/*.a|*.lib|*.la|*.so|*.dll
 ```
 \<os\> => win32, linux, mac, freebsd, solaris
@@ -135,14 +135,20 @@ Not all my repositories can be like that, for example [crosstools]( https://gith
 ## Proxy packages
 Proxy repositories mainly consume other module(s) in the form of sub-module(s). They might have some code of their own to provide addons (usually in the format of an ‘addon’ directory), but most of the time they are simply referring to the upstream module(s) they proxy (which can be mine or a 3rd party) and then have the ‘targets’ structure where they provide the binary versions.
 
-Best example of that is the [libcodecs](https://github.com/philippe44/libcodecs) package that include many codecs from upstream directly when possible and from my fork when needed.
+Good example of that is the [libcodecs](https://github.com/philippe44/libcodecs) package that includes many codecs from upstream directly when possible and from my forks when needed.
 
 ## Cloning and rebuilding
-The ‘build.sh’ script is a cross-compiling script that will rebuild all the targets it can, depending on the compilers existing on your machine. Please have a look at the script, it’s very simple and you can adjust it if needed in case compilers names don’t match -use build.cmd for Windows, needs Visual Studio).
+The ‘build.sh’ script is a cross-compiling script (for non-Windows) that will rebuild all the targets it can, depending on the compilers existing on your machine. Please have a look at the script, it’s very simple and you can adjust it if needed in case compilers names don’t match. It can be invoked with the following syntax:
+```
+./build.sh [clean] [<compiler_1> .. <compiler_n>]
+```
+Where \<compiler\> is a string that matches the compilers you want to use (for example 'x86' will match all os and cpu that include 'x86' in their name) and 'clean' performs some cleanup. Note that 'clean' sometimes means just do a cleanup and you'll ahve to invoke the script again to build, sometimes it means 'clean and build'.
 
 The ‘list’ variable list compiler names which sets the \<os\> and <\cpu\> names and the ‘alias’ variable is an indirection to the **real** compiler, as they might not be the same. 
 
 For example, I prefer to have 32 bits Intel binaries named by ‘x86’ so the list is ‘x86-linux-gnu-gcc’ which is not a real compiler but the alias tells it is ‘i686-linux-gnu-gcc’. It’s very convenient if the same compiler can produce two types of binaries, depending on some flags.
+
+For Windows, use build.cmd for Windows (needs Visual Studio). The onlly parameter is 'rebuild' which mean a full cleanup.
 
 When you clone one of these repositories, you can just do a normal clone in which case you have the ‘targets’ directory with all includes and libraries which should be enough to use and rebuild it.
 
