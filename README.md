@@ -93,3 +93,67 @@ On the osxcross guide, note that you can build gcc as well, which is what I'm us
 
 A few words on Windows as well. There, I use mainly Visual Studio and projects/solutions. Nevertheless, it is worth mentioning that most of packages that come with CMake build files can automatically generate VS projects. Just do, on your Windows machine, as you do on a Linux box `Cmake .. -A Win32 <options>` and it will mostly magically spit out '.vcxproj' files that you can use later. This is what I do in my "pre-compiled builds" described below.
 d it will mostly magically spit out '.vcxproj' files that you can use later? THis is what I do in my "pre-compiled builds" described below.
+
+# Organizing submodules & packages 
+Most of my applications have been through increasing complexity in term of number of platform (Windows, Linux x86, x86_64, arm, aarch64, sparc, mips, powerpc, OSX, FreeBSD, Solaris) and amount of used modules/3rd party repositories. This led to complicated build, especially because I want to do automated cross-compilation. 
+
+I’ve decided to pre-build some of the packages I use, whether they are mine or from 3rd parties. These packages do not evolve fast and having them available in binary saves a lot of compiling time and (re)building complexity around setting the right flags, especially if you don’t have proper build tool provided by the maintainer. 
+
+I know this is a domain of strong opinions and many would say “use CMake and rebuild all from source”, I just think CMake is over-complicated for some of what I do and more important, it’s not always available. Some libraries (openssl) use a Perl script, some only provide autotools, some do CMake and autotools…
+
+So I’ve adopted a sort of interim approach where you can rebuild all what I provide, but you can also choose to use pre-build binaries for each sub-modules/packages and only rebuild the core of the application. Every package I use is organized the following way
+
+-- \<various sources and other stuff needed for the package\>
+-- build.sh
+-- build.cmd
+-- targets
+   |-- include/\<sub-package\>/*.h
+   |-- \<os\>/include/\<sub-package\>/*.h
+   |-- \<os\>/\<cpu\>/include/<sub-package>/*.h
+   |-- \<os\>/\<cpu\>/*.a|*.lib|*.la|*.so|*.dll
+
+\<os\> => win32, linux, mac, freebsd, solaris
+\<cpu\> => x86, x86_64, arm, aarch64, sparc64, mips, powerc
+
+The ‘include’ directory in ‘targets’ only exists if the package is good enough to have an API that works for every cpu and os. Similarly, an ‘include’ might work at the os level, regardless of cpu. In case there is no rule, then include is existing under each <os>/<cpu> directory.
+
+In root, a set of build scripts or .vcxproj can be found to rebuild these libraries if needed, but the goal is to not have to. It will be ‘build.cmd’ for Windows and ‘build.sh’ for all others.
+
+In the <os>/<cpu> directory, there are all the libraries (mostly static) that are offered by the package and a library (named after the package) that is the concatenation of all these so that the application consuming it does not need to know individual names (you need to know what to include, though). 
+
+For example, ‘openssl’ offers ‘libcrypto’ and ‘libopenssl’. I don’t want to have to explicitly refer to these when I build my applications, so they are concatenated into a single ‘libopenssl.a’. 
+
+Note that all the individual libraries are still there and the concatenated one is (when possible) just a “thin” library.
+
+There are two types of repositories: local and proxy.
+
+## local packages
+These repositories contain only code that I provide and that I’ve decided to build as binaries because it does not change often and does not need to be tailored to the application being build (no compile flags needed by the app).
+
+Not all my repositories can be like that, for example [crosstools]( https://github.com/philippe44/crosstools) is used as source code directly because the final application might tweak some flags that are not os or cpu related
+
+## proxy packages
+Proxy repositories mainly consume other module(s) in the form of sub-module(s). They might have some code of their own to provide addons (usually in the format of an ‘addon’ directory), but most of the time they are simply referring to the upstream module(s) they proxy (which can be mine or a 3rd party) and then have the ‘targets’ structure where they provide the binary versions.
+
+Best example of that is the [libcodecs](https://github.com/philippe44/libcodecs) package that include many codecs from upstream directly when possible and from my fork when needed.
+
+## cloning and rebuilding
+The ‘build.sh’ script is a cross-compiling script that will rebuild all the targets it can, depending on the compilers existing on your machine. Please have a look at the script, it’s very simple and you can adjust it if needed in case compilers names don’t match -use build.cmd for Windows, needs Visual Studio).
+
+The ‘list’ variable list compiler names which sets the \<os\> and <\cpu\> names and the ‘alias’ variable is an indirection to the **real** compiler, as they might not be the same. 
+
+For example, I prefer to have 32 bits Intel binaries named by ‘x86’ so the list is ‘x86-linux-gnu-gcc’ which is not a real compiler but the alias tells it is ‘i686-linux-gnu-gcc’. It’s very convenient if the same compiler can produce two types of binaries, depending on some flags.
+
+When you clone one of these repositories, you can just do a normal clone in which case you have the ‘targets’ directory with all includes and libraries which should be enough to use and rebuild it.
+
+Now, when a package refers to sub-modules (and all proxy ones do), then these are needed if you want to rebuild it (once again, this is not needed and nor is the objective, but it’s possible). In such a case do a `git clone \<repository\> [\<directory\>] -–recursive` to get everything and be able to rebuild.
+
+## application recommendation wrt recursive cloning
+My applications (for example [AirCOnnect]( https://github.com/philippe44/AirConnect)) leverage that system a lot and if you device to clone it recursively, it will pull a ton of sub-modules, because one of the package it is using can also need many sub-modules, sometimes the sames are required multiple times.
+
+That’s why cloning recursively such repositories is not a good idea. If you want to rebuild; I recommend doing a 2-steps cloning.
+
+1-	Clone the main repository: `git clone https://github.com/philippe44/AirConnect`
+2-	Init its submodules non-recursively: go into “AirConnect” and then do a `git submodule update -–init`
+This will do a ‘one level only’ cloning which is sufficient to build the main application and rebuild all its sub-modules/packages.
+
