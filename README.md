@@ -127,17 +127,17 @@ Note that all the individual libraries are still there and the concatenated one 
 
 There are two types of repositories: local and proxy.
 
-## local packages
+## Local packages
 These repositories contain only code that I provide and that I’ve decided to build as binaries because it does not change often and does not need to be tailored to the application being build (no compile flags needed by the app).
 
 Not all my repositories can be like that, for example [crosstools]( https://github.com/philippe44/crosstools) is used as source code directly because the final application might tweak some flags that are not os or cpu related
 
-## proxy packages
+## Proxy packages
 Proxy repositories mainly consume other module(s) in the form of sub-module(s). They might have some code of their own to provide addons (usually in the format of an ‘addon’ directory), but most of the time they are simply referring to the upstream module(s) they proxy (which can be mine or a 3rd party) and then have the ‘targets’ structure where they provide the binary versions.
 
 Best example of that is the [libcodecs](https://github.com/philippe44/libcodecs) package that include many codecs from upstream directly when possible and from my fork when needed.
 
-## cloning and rebuilding
+## Cloning and rebuilding
 The ‘build.sh’ script is a cross-compiling script that will rebuild all the targets it can, depending on the compilers existing on your machine. Please have a look at the script, it’s very simple and you can adjust it if needed in case compilers names don’t match -use build.cmd for Windows, needs Visual Studio).
 
 The ‘list’ variable list compiler names which sets the \<os\> and <\cpu\> names and the ‘alias’ variable is an indirection to the **real** compiler, as they might not be the same. 
@@ -148,7 +148,7 @@ When you clone one of these repositories, you can just do a normal clone in whic
 
 Now, when a package refers to sub-modules (and all proxy ones do), then these are needed if you want to rebuild it (once again, this is not needed and nor is the objective, but it’s possible). In such a case do a `git clone \<repository\> [\<directory\>] -–recursive` to get everything and be able to rebuild.
 
-## application recommendation wrt recursive cloning
+## Application recommendation wrt recursive cloning
 My applications (for example [AirConnect]( https://github.com/philippe44/AirConnect)) leverage that system a lot and if you device to clone it recursively, it will pull a ton of sub-modules, because one of the package it is using can also need many sub-modules, sometimes the sames are required multiple times.
 
 That’s why cloning recursively such repositories is not a good idea. If you want to rebuild; I recommend doing a 2-steps cloning.
