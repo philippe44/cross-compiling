@@ -102,16 +102,16 @@ I’ve decided to pre-build some of the packages I use, whether they are mine or
 I know this is a domain of strong opinions and many would say “use CMake and rebuild all from source”, I just think CMake is over-complicated for some of what I do and more important, it’s not always available. Some libraries (openssl) use a Perl script, some only provide autotools, some do CMake and autotools…
 
 So I’ve adopted a sort of interim approach where you can rebuild all what I provide, but you can also choose to use pre-build binaries for each sub-modules/packages and only rebuild the core of the application. Every package I use is organized the following way
-
--- \<various sources and other stuff needed for the package\>
+```
+-- <various sources and other stuff needed for the package>
 -- build.sh
 -- build.cmd
 -- targets
-   |-- include/\<sub-package\>/*.h
-   |-- \<os\>/include/\<sub-package\>/*.h
-   |-- \<os\>/\<cpu\>/include/<sub-package>/*.h
-   |-- \<os\>/\<cpu\>/*.a|*.lib|*.la|*.so|*.dll
-
+   |-- include/<sub-package>/*.h
+   |-- <os>/include/<sub-package>/*.h
+   |-- <os>/<cpu\>/include/<sub-package>/*.h
+   |-- <os>/<cpu>/*.a|*.lib|*.la|*.so|*.dll
+```
 \<os\> => win32, linux, mac, freebsd, solaris
 \<cpu\> => x86, x86_64, arm, aarch64, sparc64, mips, powerc
 
@@ -149,7 +149,7 @@ When you clone one of these repositories, you can just do a normal clone in whic
 Now, when a package refers to sub-modules (and all proxy ones do), then these are needed if you want to rebuild it (once again, this is not needed and nor is the objective, but it’s possible). In such a case do a `git clone \<repository\> [\<directory\>] -–recursive` to get everything and be able to rebuild.
 
 ## application recommendation wrt recursive cloning
-My applications (for example [AirCOnnect]( https://github.com/philippe44/AirConnect)) leverage that system a lot and if you device to clone it recursively, it will pull a ton of sub-modules, because one of the package it is using can also need many sub-modules, sometimes the sames are required multiple times.
+My applications (for example [AirConnect]( https://github.com/philippe44/AirConnect)) leverage that system a lot and if you device to clone it recursively, it will pull a ton of sub-modules, because one of the package it is using can also need many sub-modules, sometimes the sames are required multiple times.
 
 That’s why cloning recursively such repositories is not a good idea. If you want to rebuild; I recommend doing a 2-steps cloning.
 
