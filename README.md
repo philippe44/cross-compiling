@@ -46,28 +46,28 @@ NB: in ct-ng 12.25.0, there is an issue with the zlib used (not found), so you n
 
 # FreeBSD and Solaris
 
-There is no fully automated solution AFAIK, but it's reasonably easy to create compilers for these. Install a version of these in a VM or find a solution to get the /usr/lib (and /usr/lib32 for freeBSD), usr/include, and /lib directories. These can be pretty large and it's more than what you really need, so try to minimize it by starting from a fresh installation. I'm not even user that /lib is needed but I took it anyway. 
+There is no fully automated solution AFAIK, but it's reasonably easy to create compilers for these. Install a version of them in a VM or find a solution to get the /usr/lib (and /usr/lib32 for freeBSD), usr/include, and /lib directories. These can be pretty large and it's more than what you really need, so try to minimize it by starting from a fresh installation. I'm not even user that /lib is needed but I took it anyway. 
 
 You should ‘tar’ these from the source machine and ‘untar’ on the machine where you want the cross-compiler to run (see below where). For similar reasons described in Linux, you have to be careful about the version of the OS you take the include and lib from, as it can limit how backward compatible you are. 
 
 Then you need to get, from [gnu sources](https://www.gnu.org/software/) different packages: binutils, mpc, gmp, mpfr, libtool and finally gcc itself. You can choose any version, as long as they form a consistent package. You'll find in this repository a couple of "scripts" that automate the build for you. Please take them with a grain of salt as they are not well-behaving scripts, just quick hacks, so read them carefully before using them.
 
 No matter what you do, there are a few important considerations. You'll find at the beginning of these scripts, the following
-`
+```
 export TARGET=x86_64-cross-freebsd$1
 export PREFIX=/opt/x86_64-freebsd$1/
 export SYSROOT=$PREFIX$TARGET/
 export PATH=$PATH:$PREFIX/bin
-`
+```
 And these are the most important things when building these cross-compilers. 
 
-TARGET defines the base name of the compiler itself and is also used by the configuration and makefiles provided by gnu to figure out what target you want to build for. In the example above, compiler components will be named (assuming the script is invoked with '13.1) 'x86_64-cross-freebsd13.1-gcc|ld|ar|ranlib'. You can’t choose anything otherwise builds will fail, as they won’t be able to figure out the targeted cpu.
+`$TARGET` defines the base name of the compiler itself and is also used by the configuration and makefiles provided by gnu to figure out what target you want to build for. In the example above, compiler components will be named (assuming the script is invoked with '13.1) 'x86_64-cross-freebsd13.1-gcc|ld|ar|ranlib'. You can’t choose anything otherwise builds will fail, as they won’t be able to figure out the targeted cpu.
 
-PREFIX defines where these will be installed and where they expect to run from, precisely under $PREFIX and $PREFIX$TARGET (as $PREFIX ends with a '/').
+`$PREFIX` defines where these will be installed and where they expect to run from, precisely under $PREFIX and $PREFIX$TARGET (as $PREFIX ends with a '/').
 
-SYSROOT is a very important item as well as it defines where the new compiler will find it's includes and libs. You don't want it to search the /usr/lib of the machine used to build and you don't want to have to set 'sysroot' every time you invoke the cross-compiler, so it's much better to set it when you build the compiler. That will point for where you ‘untar’ what you got from the source machine. Read the gnu docs here, there are some subtilities, for example like if sysroot is made of $PREFIX and $TARGET when you build the compiler, then it will be built with **relative** path to where it runs, which can be very convenient if you want to move it to another place later. Otherwise, the path to its /usr/lib, /usr/include will be hardcoded.
+`$SYSROOT` is a very important item as well as it defines where the new compiler will find it's includes and libs. You don't want it to search the /usr/lib of the machine used to build and you don't want to have to set 'sysroot' every time you invoke the cross-compiler, so it's much better to set it when you build the compiler. That will point for where you ‘untar’ what you got from the source machine. Read the gnu docs here, there are some subtilities, for example like if sysroot is made of $PREFIX and $TARGET when you build the compiler, then it will be built with **relative** path to where it runs, which can be very convenient if you want to move it to another place later. Otherwise, the path to its /usr/lib, /usr/include will be hardcoded.
 
-Finally, when building, gcc, you must have PATH giving access to binutils build before, otherwise build will fail.
+Finally, when building, gcc, you must have your `PATH` giving access to binutils build before, otherwise build will fail.
 
 Note that the untar directory of the targets’ /usr/lib[32], /usr/include and /lib is `$PREFIX$TARGET`. Some other guides don't do that but then they have to correct all the symlinks that are defined in the directories of the machine where you borrowed them. I find that useless and prefer to have a clean ‘tar/untar’, with all symlinks ready to be untar at the right place (BTW, this is why you want to use ‘tar’, not ‘cp’ to make sure these symlinks are preserved). 
 
