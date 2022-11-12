@@ -40,6 +40,8 @@ In this repository, I've added a list of '.config.stretch.xxx' files that are my
 
 Now, that might not always work so in last resort you can build 'static' versions of your apps using the '-static' linker flag. Understand that although this works, quite often, this is a bad idea as the result is not a more portable, independent, solution, but it's a much bigger binary that will not benefit from future dynamically loaded libraries fixes (think issues with openssl for example) and even worse won't be fully independent because if your application uses dlopen (e.g.) it will still try to load libraries and in that case it will work on if runs with the exact glibc it has been built with. So ‘-static’ is really a last resort option, despite what some say.
 
+Now, you can configure glibc with '--enable-static-nss' and at least `gethostname` and `getaddrinfo`won't try to use dlopen so they won't require the GLIBC yoy've compiled with. There might be other limitations that I'm not aware of. All my ct-ng examples include this option.
+
 I usually install my compilers on path like `/opt/<cpu>-<os>` and add these `<path>/bin` to an `/etc/profile.d/xxx.sh` file so that the $PATH let me access all my compilers (just add `export PATH=$PATH:<path>` in that .sh file)
 
 NB: in ct-ng 12.25.0, there is an issue with the zlib used (not found), so you need to manually edit the generated .config and replace the version which ends in .12 by .13. There is another problem with mips if you want to use glibc 2.23. You need to grab the latest patch file `0014-MIPS-SPARC-fix-wrong-vfork-aliases-in-libpthread.so` (see [here](https://github.com/crosstool-ng/crosstool-ng/pull/1746)).
