@@ -36,7 +36,7 @@ The usual answer you find is "you idiot, just use an old machine to build". I fi
 
 After many attempts, the only scalable solution I've found is to rebuild *all* the compilers, for your native CPU but also all cross-compilers. This sounds awful, but there is very fine solution using [crosstools-ng](https://crosstool-ng.github.io/). It can look a bit intimidating at the beginning but it's not, especially if you use listed samples. 
 
-In this repository, I've added a list of '.config.stretch.xxx' files that are my own verified configuration for ct-ng based on Debian Stretch (means around early 2016) and they all use a glibc version 2.23. This gives enough mileage, IMHO with 6-years old type of distros.
+In this repository, I've added a list of '.config.stretch.xxx' files that are my own verified configuration for ct-ng based on Debian Stretch (means around early 2016) and they all use a glibc version 2.23 and kernel 4.4+. This gives enough mileage, IMHO with 6-years old type of distros.
 
 Now, that might not always work so in last resort you can build 'static' versions of your apps using the '-static' linker flag. Understand that although this works, quite often, this is a bad idea as the result is not a more portable, independent, solution, but it's a much bigger binary that will not benefit from future dynamically loaded libraries fixes (think issues with openssl for example) and even worse won't be fully independent because if your application uses dlopen (e.g.) it will still try to load libraries and in that case it will work on if runs with the exact glibc it has been built with. So ‘-static’ is really a last resort option, despite what some say.
 
