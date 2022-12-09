@@ -1,6 +1,6 @@
 # Introduction
 
-This is a description of how I handle cross-compilation for Linux (i686, x86_64, aarch64, armv6 and armv7, sparc, linux, mips, powerpc), FreeBSD, Solaris, MacOS and to a lower extent, Windows. There is also a section on how I structured my repositories and decide of source vs pre-compiled.
+This is a description of how I handle cross-compilation for Linux (i686, x86_64, aarch64, armv6 and armv7, sparc, linux, mips, powerpc), FreeBSD, Solaris, MacOS and to a lower extent, Windows. There is also a section on how I have structured my repositories and decided of source vs pre-compiled.
 
 # Compilation
 
