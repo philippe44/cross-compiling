@@ -8,7 +8,7 @@ Because my applications have some so many binary versions, I need a centralized 
 
 ## Linux
 
-This was supposed to be the easy part. I'm under some Debian-based distro and moved to 22.04 LTS at the time of this writing. A lot of compilers are provided pre-build and can be added with:
+This was supposed to be the easy part. I'm under some Debian-based distro and moved to 22.04 LTS at the time of this writing. A lot of compilers are provided pre-built and can be added with:
 ```
  sudo apt-get install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
  sudo apt-get install gcc-arm-linux-gnueabi binutils-arm-linux-gnueabi
