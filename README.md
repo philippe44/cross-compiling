@@ -85,7 +85,7 @@ NB: The solaris version is set to 2.x although solaris lates version is 11.4. Le
 
 ## MacOS
 
-The situation is a bit better with MacOS thanks to [osxcross](https://github.com/tpoechtrager/osxcross). There is not much to add, just carefully read the instructions that I won't duplicate here<
+The situation is a bit better with MacOS thanks to [osxcross](https://github.com/tpoechtrager/osxcross). There is not much to add, just carefully read the instructions that I won't duplicate here.
  
 There is only one caveat if you build on folders that are not local, I've found an issue in the libtool provided and I've submitted a PR [here](https://github.com/tpoechtrager/cctools-port/pull/126). Similarly, when you use clang compiler, it will leave a ton of ".tmp" files behind unless you use compile flag`-fno-temp-file`.
 
