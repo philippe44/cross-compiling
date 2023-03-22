@@ -118,8 +118,11 @@ So I’ve adopted a sort of interim approach where you can rebuild all what I pr
 \<os\> => win32, linux, mac, freebsd, solaris
 \<cpu\> => x86, x86_64, arm, aarch64, sparc64, mips, powerc
 
-The 'cmake' directory contains an optional package finder for cmake, very simplified that allows the libraries to be found using find_package(<package-name> CONFIG). The attached example will populate a <PACKAGE-NAME>_INCLUDE_DIRS and a <PACKAGE-NAME>_LIBRARIES that can be used in the requesting cmake file.
-
+The 'cmake' directory contains an optional package finder for cmake, very simplified that allows the libraries to be found using find_package(<package-name> CONFIG). The attached example will populate properties that can be retrieved doing
+ ```
+ get_target_property(<MyVAR> <package-name>::<library> INTERFACE_INCLUDE_DIRECTORIES)
+ get_target_property(<MyVAR> <package-name>::<library> IMPORTED_LOCATION_RELEASE}
+ ```
 The ‘include’ directory in ‘targets’ only exists if the package is clean enough to have an API that works for every cpu and os. Similarly, an ‘include’ might work at the os level, regardless of cpu. In case there is no rule, then 'include' exists under each <os>/<cpu> directory.
 
 In root, a set of build scripts or .vcxproj can be found to rebuild these libraries if needed, but the goal is to not have to. It will be ‘build.cmd’ for Windows and ‘build.sh’ for all others.
