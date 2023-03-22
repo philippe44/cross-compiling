@@ -1,12 +1,24 @@
-set(_CONFIG_ITEMS addons alac faad flac mad ogg opus opusfile opusurl shine soxr utf8 vorbis vorbisenc vorbisfile)
+# don't change that
 set(_CONFIG_DIR ${CMAKE_CURRENT_LIST_DIR}/targets)
 
 # set if there is a group library that aggregates them all
 set(_CONFIG_GROUP codecs)
 
-# choose one or the other
-#set(_CONFIG_INC_PATH "${_CONFIG_DIR}/${HOST}/${PLATFORM}/include")
+# set the items here, there might be none (just a group)
+set(_CONFIG_ITEMS addons alac faad flac mad ogg opus opusfile opusurl shine soxr utf8 vorbis vorbisenc vorbisfile)
+
+# includes have one of the following structure (there might be no item)
+# -- include/<item>/*.h
+# -- <os>/include/<item>/*.h
+# -- <os>/<cpu>/include/<item>/*.h
+
+# set to 1 if all items share a common include
+set(_CONFIG_COMMON_INC 0)
+
+# set the base include - actual maybe include the item 
 set(_CONFIG_INC_PATH "${_CONFIG_DIR}/include")
+#set(_CONFIG_INC_PATH "${_CONFIG_DIR}/${HOST}/include")
+#set(_CONFIG_INC_PATH "${_CONFIG_DIR}/${HOST}/${PLATFORM}/include")
 
 message(STATUS "Using package ${CMAKE_FIND_PACKAGE_NAME} in ${_CONFIG_DIR}/${HOST}/${PLATFORM}")
 
@@ -61,13 +73,21 @@ endfunction()
 
 foreach(ITEM ${_CONFIG_ITEMS})
 	SetProperties(${ITEM})
-	set_target_properties(${CMAKE_FIND_PACKAGE_NAME}::${ITEM} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${INC_PATH}/${ITEM}")
-	list(APPEND _CONFIG_GROUP_INC "${_CONFIG_INC_PATH}/${ITEM}")
+	if (_CONFIG_COMMON_INC)
+		set_target_properties(${CMAKE_FIND_PACKAGE_NAME}::${ITEM} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${_CONFIG_INC_PATH}")
+	else()
+		set_target_properties(${CMAKE_FIND_PACKAGE_NAME}::${ITEM} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${_CONFIG_INC_PATH}/${ITEM}")
+		list(APPEND _CONFIG_GROUP_INC "${_CONFIG_INC_PATH}/${ITEM}")
+	endif()
 endforeach()
 
 if(_CONFIG_GROUP)
 	SetProperties(${_CONFIG_GROUP})
-	set_target_properties(${CMAKE_FIND_PACKAGE_NAME}::${_CONFIG_GROUP} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${_CONFIG_GROUP_INC}")
+	if (_CONFIG_COMMON_INC)
+		set_target_properties(${CMAKE_FIND_PACKAGE_NAME}::${_CONFIG_GROUP} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${_CONFIG_INC_PATH}")
+	else()
+		set_target_properties(${CMAKE_FIND_PACKAGE_NAME}::${_CONFIG_GROUP} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${_CONFIG_GROUP_INC}")
+	endif()
 endif()
 
 # Commands beyond this point should not need to know about these
@@ -77,3 +97,4 @@ unset(_CONFIG_GROUP)
 unset(_CONFIG_GROUP_INC)
 unset(_CONFIG_EXT)
 unset(_CONFIG_INC_PATH)
+unset(_CONFIG_COMMON_INC)
