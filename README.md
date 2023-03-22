@@ -30,7 +30,7 @@ Unfortunately, as soon as you want to distribute the compiled binaries to other 
 
 There has been a lot of debate about how this is handled in Linux and I personally don't like it, as the only compatibility you can have is for future versions, but nothing can go backward – you can NOT build for older systems on a recent machine. AFAIK, MacOS and Windows do that very easily. 
 
-The idea to decide what GLIBC version at compile time with your built-in compilers does not work, and I've tried that (very hard). In addition, you'll have issues with stdlibc++ which has a similar but worse version of that problem. 
+The idea to decide what GLIBC version at compile time with your built-in compilers does not work, and I've tried that (very hard). In addition, you'll have issues with stdlibc++ which has a similar but worse version of that problem. It is linked to gcc version, see [here](https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html)
 
 The usual answer you find is "you idiot, just use an old machine to build". I find this well-spread advice really silly as I want to build on a recent machine, obviously, because I need recent tools as well! That makes no sense to say that devs should use outdated distributions.
 
