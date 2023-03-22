@@ -118,7 +118,7 @@ So I’ve adopted a sort of interim approach where you can rebuild all what I pr
 \<os\> => win32, linux, mac, freebsd, solaris
 \<cpu\> => x86, x86_64, arm, aarch64, sparc64, mips, powerc
 
-The 'cmake' directory contains an optional package finder for cmake, very simplified that allows the libraries to be found using find_package(<package-name> CONFIG). The attached example will populate properties that can be retrieved doing
+The 'cmake' directory contains an optional package finder for cmake, very simplified that allows the libraries to be found using find_package(<package-name> CONFIG). The attached example will populate properties that can be retrieved doing - it requires variables HOST (os) and PLATFORM (cpu) to be defined and to match the structure above
  ```
  get_target_property(<MyVAR> <package-name>::<library> INTERFACE_INCLUDE_DIRECTORIES)
  get_target_property(<MyVAR> <package-name>::<library> IMPORTED_LOCATION_RELEASE}
