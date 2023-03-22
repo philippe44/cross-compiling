@@ -107,6 +107,8 @@ So I’ve adopted a sort of interim approach where you can rebuild all what I pr
 -- <various sources and other stuff needed for the package>
 -- build.sh
 -- build.cmd
+-- cmake (optional)
+   |-- <package-name>Config.cmake
 -- targets
    |-- include/<sub-package>/*.h
    |-- <os>/include/<sub-package>/*.h
@@ -115,6 +117,8 @@ So I’ve adopted a sort of interim approach where you can rebuild all what I pr
 ```
 \<os\> => win32, linux, mac, freebsd, solaris
 \<cpu\> => x86, x86_64, arm, aarch64, sparc64, mips, powerc
+
+The 'cmake' directory contains an optional package finder for cmake, very simplified that allows the libraries to be found using find_package(<package-name> CONFIG). The attached example will populate a <PACKAGE-NAME>_INCLUDE_DIRS and a <PACKAGE-NAME>_LIBRARIES that can be used in the requesting cmake file.
 
 The ‘include’ directory in ‘targets’ only exists if the package is clean enough to have an API that works for every cpu and os. Similarly, an ‘include’ might work at the os level, regardless of cpu. In case there is no rule, then 'include' exists under each <os>/<cpu> directory.
 
