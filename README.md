@@ -177,9 +177,15 @@ You have to find the libraries built with your compiler. There will be a libc.so
 
 Then, you can run the application simply using
 ```
-LD_LIBRARY_PATH=/usr/local/lib <application
+LD_LIBRARY_PATH=/usr/local/lib <application>
 ```
-Or set LD_LIBRARY_PATH system-wide (using export LD_LIBRARYPATH=\<...\>) but I really don't recommand doing that. You can also try setting LD_NOVERSION=1 to avoid anycheck, at your own peril
+You can also use system variables and this Tt force the search to be made below the directory **containing** the application and use either "lib" or "lib64"
+```
+LD_LIBRARY_PATH='$ORIGIN/$LIB' <application>
+```
+Or you can set LD_LIBRARY_PATH system-wide (using export LD_LIBRARYPATH=\<...\>) but I really don't recommand doing that. 
+ 
+You can also try setting LD_NOVERSION=1 to avoid anycheck, at your own peril
 
 Here is an untested script example for Solaris
 ```
