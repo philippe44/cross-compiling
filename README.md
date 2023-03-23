@@ -38,6 +38,8 @@ After many attempts, the only scalable solution I've found is to rebuild *all* t
 
 In this repository, I've added a list of '.config.stretch.xxx' files that are my own verified configuration for ct-ng based on Debian Stretch (means around early 2016) and they all use a glibc version 2.23 and kernel 4.4+. This gives enough mileage, IMHO with 6-years old type of distros.
 
+If these GLIBC and GLIBCXX are still too new for your system, you're not yet out of luck, you can try to force your application to use the libc and libstdc++ that you have just built with the compilers. See [below](#running-an-application-by-forcing-glibc-and-glibcxx) for more explanations.
+
 Now, that might not always work so in last resort you can build 'static' versions of your apps using the '-static' linker flag. Understand that although this works, quite often, this is a bad idea as the result is not a more portable, independent, solution, but it's a much bigger binary that will not benefit from future dynamically loaded libraries fixes (think issues with openssl for example) and even worse won't be fully independent because if your application uses dlopen (e.g.) it will still try to load libraries and in that case it will work on if runs with the exact glibc it has been built with. So ‘-static’ is really a last resort option, despite what some say.
 
 Now, when you rebuild glibc, you can configure it with '--enable-static-nss' and at least `gethostname` and `getaddrinfo` won't try to use dlopen so they won't require the GLIBC you've compiled with (it has other implication in term of name resolving but you can Google that). There might be other limitations that I'm not aware of. All my ct-ng examples include this option.
@@ -169,4 +171,43 @@ That’s why cloning recursively such repositories is not a good idea. If you wa
 1-	Clone the main repository: `git clone https://github.com/philippe44/AirConnect`
 2-	Init its submodules non-recursively: go into “AirConnect” and then do a `git submodule update -–init`
 This will do a ‘one level only’ cloning which is sufficient to build the main application and rebuild all its sub-modules/packages.
+
+# Running an application by forcing GLIBC and GLIBCXX
+You have to find the libraries built with your compiler. There will be a libc.so.x and a libstdc++.x.y.z files, probably one in lib/ and one in lib/amd64 (or similar). Copy them on your target system under typically /usr/local/lib and creates symlinks so that your system can work. Look at other symlinks for pre-installed libc and libcstdc++ under /lib to figure out exactly what you need to do and don't forget to chmod all these files so that anybody can read them.
+
+Then, you can run the application simply using
+```
+LD_LIBRARY_PATH=/usr/local/lib <application>
+```
+You can also use system variables and this Tt force the search to be made below the directory **containing** the application and use either "lib" or "lib64"
+```
+LD_LIBRARY_PATH='$ORIGIN/$LIB' <application>
+```
+Or you can set LD_LIBRARY_PATH system-wide (using export LD_LIBRARYPATH=\<...\>) but I really don't recommand doing that. 
+ 
+You can also try setting LD_NOVERSION=1 to avoid anycheck, at your own peril
+
+Here is an untested script example for Solaris
+```
+library=libstdc++.so.6.0.29
+
+mkdir amd64
+ln -s . 32
+ln -s amd64 64
+
+pwd = $(pwd)
+
+cd 32
+ln -s $library libstdc++.so 
+ln -s $library libstdc++.so.6
+cd $pwd
+
+cd 64
+ln -s $library libstdc++.so 
+ln -s $library libstdc++.so.6
+cd $pwd
+
+chmod -R o+r libstdc++*
+```
+
 
