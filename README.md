@@ -175,7 +175,7 @@ This will do a ‘one level only’ cloning which is sufficient to build the mai
 # Running an application by forcing GLIBC and GLIBCXX
 If the OS you're trying to run an application onto has GLIBC or GLIBCXX that are too old, you can force the dynamic library loader to look first into specific directories where you'd have put your version of these libraries. 
 
-You have to find the libraries built with your compiler (I have uploaded some [here](https://github.com/philippe44/cross-compiling/blob/master/GLIB.xz). There will be a libc.so.x and a libstdc++.x.y.z files, probably one in lib/ and one in lib/amd64 (or lib64 or similar). Copy them on your target system under typically /usr/local/lib and creates symlinks so that these new libs mirror a normal libc/libstdc++ setup. For this, look at other symlinks for the pre-installed libc and libcstdc++ under /lib to figure out exactly what you need to do and don't forget to chmod all these files so that anybody can read them.
+You have to find the libraries built with your compiler (I have uploaded some [here](https://github.com/philippe44/cross-compiling/blob/master/GLIB.xz)). There will be a libc.so.x and a libstdc++.x.y.z files, probably one in lib/ and one in lib/amd64 (or lib64 or similar). Copy them on your target system under typically /usr/local/lib and creates symlinks so that these new libs mirror a normal libc/libstdc++ setup. For this, look at other symlinks for the pre-installed libc and libcstdc++ under /lib to figure out exactly what you need to do and don't forget to chmod all these files so that anybody can read them.
 
 Then, you can run the application simply using
 ```
