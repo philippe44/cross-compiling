@@ -168,10 +168,11 @@ My applications (for example [AirConnect]( https://github.com/philippe44/AirConn
 
 That’s why cloning recursively such repositories is not a good idea. If you want to rebuild; I recommend doing a 2-steps cloning.
 
-1-	Clone the main repository: `git clone https://github.com/philippe44/AirConnect`
-2-	Init its submodules non-recursively: go into “AirConnect” and then do a `git submodule update -–init`
+1.	Clone the main repository: `git clone https://github.com/philippe44/AirConnect`
+2.	Init its submodules non-recursively: go into “AirConnect” and then do a `git submodule update -–init`
 This will do a ‘one level only’ cloning which is sufficient to build the main application and rebuild all its sub-modules/packages.
 
+Now, you can always clone the root package recursively and then you'll have everything which also means you'll be able to fully rebuild each individual library/package locally (in the sub-tree) using its own 'build.sh'.
 # Running an application by forcing GLIBC and GLIBCXX
 If the OS you're trying to run an application onto has GLIBC or GLIBCXX that are too old, you can force the dynamic library loader to look first into specific directories where you'd have put your version of these libraries. 
 
