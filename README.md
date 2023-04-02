@@ -48,7 +48,7 @@ I usually install my compilers on path like `/opt/<cpu>-<os>` and add these `<pa
 
 NB: In ct-ng 12.25.0, there is an issue with the zlib used (not found), so you need to manually edit the generated .config and replace the version which ends in .12 by .13. There is another problem with mips if you want to use glibc 2.23. You need to grab the latest patch file `0014-MIPS-SPARC-fix-wrong-vfork-aliases-in-libpthread.so` (see [here](https://github.com/crosstool-ng/crosstool-ng/pull/1746)).
 
-NB: By default, gcc uses -ffast-math and glibc is built with libmvec.so. Some Linux distributions do not include libmvec so your application may fail. Although this can be resolved by the GLIBC trick above, it can be desirable to use -fno-fast-math in gcc and my glibc has the option "--disable-mathvec" so that it does not build nor require libmvec.so. It is probably enough to compile with "-fno-fast-math" and leave glibc as it is, but I've not tried that.
+NB: By default, gcc uses -ffast-math and glibc is built with libmvec.so. Some Linux distributions do not include libmvec so your application may fail. Although this can be resolved by the GLIBC trick above, it can be desirable to use -fno-fast-math in gcc and my glibc has the option "--disable-mathvec" so that it does not build nor require libmvec.so. It is probably enough to compile with "-fno-fast-math" and leave glibc as it is, but I've not tried that. Also, according to what I've read, if glibc has been compiled without mathvec, then gcc should detect it at compilaton of any application and not generate the fast math function calls (sin, cos, log...) but this is not what I've observed unfortunately.
 
 # FreeBSD and Solaris
 
