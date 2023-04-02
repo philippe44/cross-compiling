@@ -48,6 +48,8 @@ I usually install my compilers on path like `/opt/<cpu>-<os>` and add these `<pa
 
 NB: In ct-ng 12.25.0, there is an issue with the zlib used (not found), so you need to manually edit the generated .config and replace the version which ends in .12 by .13. There is another problem with mips if you want to use glibc 2.23. You need to grab the latest patch file `0014-MIPS-SPARC-fix-wrong-vfork-aliases-in-libpthread.so` (see [here](https://github.com/crosstool-ng/crosstool-ng/pull/1746)).
 
+NB: By default, gcc uses -ffast-math and glibc is built with libmvec.so. Some Linux distributions do not include libmvec so your application may fail. Although this can be resolved by the GLIBC trick above, it can be desirable to use -fno-fast-math in gcc and my glibc has the option "--disable-mathvec" so that it does not build nor require libmvec.so. It is probably enough to compile with "-fno-fast-math" and leave glibc as it is, but I've not tried that.
+
 # FreeBSD and Solaris
 
 There is no fully automated solution AFAIK, but it's reasonably easy to create compilers for these. Install a version of the OS in a VM or find a solution to get the /usr/lib (and /usr/lib32 for freeBSD), usr/include, and /lib directories. These can be pretty large and it's more than what you really need, so try to minimize it by starting from a fresh installation. I'm not even sure that /lib is needed but I took it anyway. 
