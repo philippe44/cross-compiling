@@ -4,7 +4,7 @@ This is a description of how I handle cross-compilation for Linux (i686, x86_64,
 
 # Compilation
 
-Because my applications have some so many binary versions, I need a centralized compilation system. I can't have a VM for each target or even a Docker instance. I need a solid, scriptable set of cross-compilers.
+Because my applications have so many binary versions, I need a centralized compilation system. I can't have a VM for each target or even a Docker instance. I need a solid, scriptable set of cross-compilers.
 
 ## Linux
 
